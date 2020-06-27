@@ -376,19 +376,21 @@ type Blocks struct {
 
 // BlockInfo contains extended block header data and a list of block txids
 type BlockInfo struct {
-	Hash          string            `json:"hash"`
-	Prev          string            `json:"previousBlockHash,omitempty"`
-	Next          string            `json:"nextBlockHash,omitempty"`
-	Height        uint32            `json:"height"`
-	Confirmations int               `json:"confirmations"`
-	Size          int               `json:"size"`
-	Time          int64             `json:"time,omitempty"`
-	Version       common.JSONNumber `json:"version"`
-	MerkleRoot    string            `json:"merkleRoot"`
-	Nonce         string            `json:"nonce"`
-	Bits          string            `json:"bits"`
-	Difficulty    string            `json:"difficulty"`
-	Txids         []string          `json:"tx,omitempty"`
+	Hash          string      `json:"hash"`
+	Prev          string      `json:"previousBlockHash,omitempty"`
+	Next          string      `json:"nextBlockHash,omitempty"`
+	Height        uint32      `json:"height"`
+	Confirmations int         `json:"confirmations"`
+	Size          int         `json:"size"`
+	Time          int64       `json:"time,omitempty"`
+	Version       json.Number `json:"version"`
+	MerkleRoot    string      `json:"merkleRoot"`
+	Nonce         string      `json:"nonce"`
+	Bits          string      `json:"bits"`
+	Difficulty    string      `json:"difficulty"`
+	Txids         []string    `json:"tx,omitempty"`
+    MoneySupply   json.Number `json:"moneysupply,omitempty"`
+    ZerocoinSupply  bchain.ZCdenoms    `json:"zPIVsupply,omitempty"`
 }
 
 // Block contains information about block
@@ -423,18 +425,21 @@ type BlockbookInfo struct {
 
 // BackendInfo is used to get information about blockchain
 type BackendInfo struct {
-	BackendError    string  `json:"error,omitempty"`
-	Chain           string  `json:"chain,omitempty"`
-	Blocks          int     `json:"blocks,omitempty"`
-	Headers         int     `json:"headers,omitempty"`
-	BestBlockHash   string  `json:"bestBlockHash,omitempty"`
-	Difficulty      string  `json:"difficulty,omitempty"`
-	SizeOnDisk      int64   `json:"sizeOnDisk,omitempty"`
-	Version         string  `json:"version,omitempty"`
-	Subversion      string  `json:"subversion,omitempty"`
-	ProtocolVersion string  `json:"protocolVersion,omitempty"`
-	Timeoffset      float64 `json:"timeOffset,omitempty"`
-	Warnings        string  `json:"warnings,omitempty"`
+	Chain           string  `json:"chain"`
+	Blocks          int     `json:"blocks"`
+	Headers         int     `json:"headers"`
+	Bestblockhash   string  `json:"bestBlockHash"`
+	Difficulty      string  `json:"difficulty"`
+	SizeOnDisk      int64   `json:"sizeOnDisk"`
+	Version         string  `json:"version"`
+	Subversion      string  `json:"subversion"`
+	ProtocolVersion string  `json:"protocolVersion"`
+	Timeoffset      float64 `json:"timeOffset"`
+	Warnings        string  `json:"warnings"`
+    MoneySupply   json.Number `json:"moneysupply"`
+    ZerocoinSupply  bchain.ZCdenoms    `json:"zPIVsupply"`
+    MasternodeCount int `json:"masternodecount"`
+    NextSuperBlock int `json:"masternodecount"`
 }
 
 // SystemInfo contains information about the running blockbook and backend instance

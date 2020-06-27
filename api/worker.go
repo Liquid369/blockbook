@@ -1660,6 +1660,8 @@ func (w *Worker) GetBlock(bid string, page int, txsOnPage int) (*Block, error) {
 			Nonce:         string(bi.Nonce),
 			Txids:         bi.Txids,
 			Version:       bi.Version,
+            MoneySupply:   bi.MoneySupply,
+            ZerocoinSupply: bi.ZerocoinSupply,
 		},
 		TxCount:      txCount,
 		Transactions: txs,
@@ -1781,6 +1783,10 @@ func (w *Worker) GetSystemInfo(internal bool) (*SystemInfo, error) {
 		Timeoffset:      ci.Timeoffset,
 		Version:         ci.Version,
 		Warnings:        ci.Warnings,
+        MoneySupply:     ci.MoneySupply,
+        ZerocoinSupply:  ci.ZerocoinSupply,
+        MasternodeCount: ci.MasternodeCount,
+        NextSuperBlock:  ci.NextSuperBlock,
 	}
 	glog.Info("GetSystemInfo finished in ", time.Since(start))
 	return &SystemInfo{blockbookInfo, backendInfo}, nil
