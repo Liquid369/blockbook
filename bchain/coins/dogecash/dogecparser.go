@@ -3,6 +3,9 @@ package dogec
 import (
 	"bytes"
 	"io"
+	"github.com/trezor/blockbook/bchain"
+	"github.com/trezor/blockbook/bchain/coins/btc"
+	"github.com/trezor/blockbook/bchain/coins/utils"
     "fmt"
     "encoding/binary"
 	"encoding/hex"
@@ -17,7 +20,6 @@ import (
 	"github.com/martinboehm/btcutil"
 	"github.com/martinboehm/btcutil/chaincfg"
 	"github.com/martinboehm/btcutil/txscript"
-
 )
 
 const (
