@@ -14,7 +14,9 @@ import (
 	"github.com/juju/errors"
     "github.com/martinboehm/btcd/blockchain"
 	"github.com/martinboehm/btcd/wire"
+	"github.com/martinboehm/btcutil"
 	"github.com/martinboehm/btcutil/chaincfg"
+	"github.com/martinboehm/btcutil/txscript"
 	"github.com/trezor/blockbook/bchain"
 	"github.com/trezor/blockbook/bchain/coins/btc"
 	"github.com/trezor/blockbook/bchain/coins/utils"
@@ -28,6 +30,7 @@ const (
 	// Zerocoin op codes
 	OP_ZEROCOINMINT  = 0xc1
 	OP_ZEROCOINSPEND  = 0xc2
+	OP_CHECKCOLDSTAKEVERIFY = 0xd1
 
     // Labels
     ZCMINT_LABEL = "Zerocoin Mint"
@@ -38,6 +41,10 @@ const (
     // Dummy Internal Addresses
     CBASE_ADDR_INT = 0xf7
     CSTAKE_ADDR_INT = 0xf8
+
+	// Staking Addresses
+	STAKING_ADDR_MAIN = 63
+	STAKING_ADDR_TEST = 73
 
 )
 
@@ -111,7 +118,7 @@ func (p *PivXParser) ParseBlock(b []byte) (*bchain.Block, error) {
 	}
 
 	if h.Version > 3 && h.Version < 7 {
-		// Skip past AccumulatorCheckpoint (block version 4, 5 and 6)
+		// Skip past AccumulatorCheckpoint
 		r.Seek(32, io.SeekCurrent)
 	}
 
@@ -272,9 +279,24 @@ func (p *PivXParser) outputScriptToAddresses(script []byte) ([]string, bool, err
     if isCoinStakeFakeAddr(script) {
         return []string{CSTAKE_LABEL}, false, nil
     }
+    if isP2CSScript(script) {
+    	return p.P2CSScriptToAddress(script)
+    }
 
 	rv, s, _ := p.BitcoinOutputScriptToAddressesFunc(script)
 	return rv, s, nil
+}
+
+// IsAddrDescIndexable returns true if AddressDescriptor should be added to index
+// empty or OP_RETURN scripts are not indexed.
+// also are not indexed: zerocoin mints/spends coinbase txes and coinstake markers
+func (p *PivXParser) IsAddrDescIndexable(addrDesc bchain.AddressDescriptor) bool {
+	if len(addrDesc) == 0 || addrDesc[0] == txscript.OP_RETURN ||
+			isCoinBaseFakeAddr(addrDesc) || isCoinStakeFakeAddr(addrDesc) ||
+			isZeroCoinSpendScript(addrDesc) || isZeroCoinMintScript(addrDesc) {
+		return false
+	}
+	return true
 }
 
 func (p *PivXParser) GetAddrDescForUnknownInput(tx *bchain.Tx, input int) bchain.AddressDescriptor {
@@ -328,7 +350,6 @@ func (p *PivXParser) GetValueSatFromZerocoinSpend(signatureScript []byte) (*big.
     return big.NewInt(int64(denom)*1e8), nil
 }
 
-
 // Checks if script is OP_ZEROCOINMINT
 func isZeroCoinMintScript(signatureScript []byte) bool {
 	return len(signatureScript) > 1 && signatureScript[0] == OP_ZEROCOINMINT
@@ -337,6 +358,10 @@ func isZeroCoinMintScript(signatureScript []byte) bool {
 // Checks if script is OP_ZEROCOINSPEND
 func isZeroCoinSpendScript(signatureScript []byte) bool {
 	return len(signatureScript) >= 100 && signatureScript[0] == OP_ZEROCOINSPEND
+}
+
+func isP2CSScript(signatureScript []byte) bool {
+	return len(signatureScript) > 50 && signatureScript[4] == OP_CHECKCOLDSTAKEVERIFY
 }
 
 // Checks if script is dummy internal address for Coinbase
@@ -352,4 +377,35 @@ func isCoinStakeFakeAddr(signatureScript []byte) bool {
 // Checks if a Tx is coinbase
 func isCoinbaseTx(tx bchain.Tx) bool {
     return len(tx.Vin) == 1 && tx.Vin[0].Coinbase != "" && tx.Vin[0].Sequence == math.MaxUint32
+}
+
+// Returns P2CS owner/staker addresses
+func (p *PivXParser) P2CSScriptToAddress(script []byte) ([]string, bool, error) {
+	if len(script) < 50 {
+		return nil, false, errors.New("Invalid P2CS script")
+	}
+	stakeParams := chaincfg.MainNetParams
+	stakeParams.PubKeyHashAddrID = []byte{STAKING_ADDR_MAIN}
+	if p.Params.Net == TestnetMagic {
+		stakeParams.PubKeyHashAddrID = []byte{STAKING_ADDR_TEST}
+	}
+
+	StakerScript := make([]byte, 20)
+	copy(StakerScript, script[6:27])
+	StakerAddr, err := btcutil.NewAddressPubKeyHash(StakerScript, &stakeParams)
+	if err != nil {
+		return nil, false, err
+	}
+	OwnerScript := make([]byte, 20)
+	copy(OwnerScript, script[28:49])
+	OwnerAddr, err := btcutil.NewAddressPubKeyHash(OwnerScript, p.Params)
+	if err != nil {
+		return nil, false, err
+	}
+
+	rv := make([]string, 2)
+	rv[0] = StakerAddr.EncodeAddress()
+	rv[1] = OwnerAddr.EncodeAddress()
+
+	return rv, true, nil
 }
