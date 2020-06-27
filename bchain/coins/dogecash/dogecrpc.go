@@ -96,7 +96,7 @@ func (b *DogeCRPC) GetNextSuperBlock(nHeight int) int {
 }
 
 // GetChainInfo returns information about the connected backend
-// PIVX adds MoneySupply and ZerocoinSupply to btc implementation
+// DOGEC adds MoneySupply and ZerocoinSupply to btc implementation
 func (b *DogeCRPC) GetChainInfo() (*bchain.ChainInfo, error) {
     rv, err := b.BitcoinGetChainInfo()
     if err != nil {
