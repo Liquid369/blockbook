@@ -10,9 +10,9 @@ import json
 
 # CONFIG
 rpc_user = "rpc"
-rpc_pass = "pivxrpc"
+rpc_pass = "dogecrpc"
 rpc_host = "127.0.0.1"
-rpc_port = "18049"
+rpc_port = "8059"
 rpc_url = "http://%s:%s@%s" % (rpc_user, rpc_pass, rpc_host)
 # FIRST BLOCK
 nFirstZPivBlock = 201576 - 201576 % 100 - 100
@@ -25,7 +25,7 @@ conn = AuthServiceProxy(rpc_url, timeout=1000, connection=httpConnection)
 
 # Read data from file
 try:
-	with open("zpivsupplydata.json", 'r') as f:
+	with open("zdogecsupplydata.json", 'r') as f:
 		data = json.load(f)
 except FileNotFoundError:
 	# first run - fill initial empty supply
@@ -67,20 +67,20 @@ while data["lastBlockNum"] + 100 <= blockCount:
 	data["lastBlockHash"] = conn.getblockhash(data["lastBlockNum"])
 	print("Getting block %d..." % data["lastBlockNum"])
 	block = conn.getblock(data["lastBlockHash"], True)
-	data["denom_1"].append(int(block["zPIVsupply"]["1"]))
-	data["denom_5"].append(int(block["zPIVsupply"]["5"]))
-	data["denom_10"].append(int(block["zPIVsupply"]["10"]))
-	data["denom_50"].append(int(block["zPIVsupply"]["50"]))
-	data["denom_100"].append(int(block["zPIVsupply"]["100"]))
-	data["denom_500"].append(int(block["zPIVsupply"]["500"]))
-	data["denom_1000"].append(int(block["zPIVsupply"]["1000"]))
-	data["denom_5000"].append(int(block["zPIVsupply"]["5000"]))
-	data["total"].append(int(block["zPIVsupply"]["total"]))
+	data["denom_1"].append(int(block["zDOGECsupply"]["1"]))
+	data["denom_5"].append(int(block["zDOGECsupply"]["5"]))
+	data["denom_10"].append(int(block["zDOGECsupply"]["10"]))
+	data["denom_50"].append(int(block["zDOGECsupply"]["50"]))
+	data["denom_100"].append(int(block["zDOGECsupply"]["100"]))
+	data["denom_500"].append(int(block["zDOGECsupply"]["500"]))
+	data["denom_1000"].append(int(block["zDOGECsupply"]["1000"]))
+	data["denom_5000"].append(int(block["zDOGECsupply"]["5000"]))
+	data["total"].append(int(block["zDOGECsupply"]["total"]))
 	data["blocks_axis"].append(data["lastBlockNum"])
 
 # Save to file
 try:
-	with open("zpivsupplydata.json", 'w+') as f:
+	with open("zdogecsupplydata.json", 'w+') as f:
 		json.dump(data, f)
 except:
 	pass
