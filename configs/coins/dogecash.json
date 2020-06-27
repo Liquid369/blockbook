@@ -23,7 +23,7 @@
         "package_revision": "satoshilabs-1",
         "system_user": "dogec",
         "version": "5.2.1",
-        "binary_url": "https://github.com/dogecash/dogecash/releases/download/v5.2.1/DogeCash-5.2.1-x86_64-linux-gnu.tar.gz",
+        "binary_url": "https://github.com/dogecash/dogecash/releases/download/v5.2.1.0/DogeCash-5.2.1-x86_64-linux-gnu.tar.gz",
         "verification_type": "sha256",
         "verification_source": "63f9beda4efb127f2dec0a3762710ab52f22b7916d50201c63cdd457cf76fb9c",
         "extract_command": "tar -C backend --strip 1 -xf",
