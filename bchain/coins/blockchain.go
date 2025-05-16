@@ -54,8 +54,10 @@ import (
 	"github.com/trezor/blockbook/bchain/coins/monacoin"
 	"github.com/trezor/blockbook/bchain/coins/monetaryunit"
 	"github.com/trezor/blockbook/bchain/coins/myriad"
+	"github.com/trezor/blockbook/bchain/coins/mrx"
 	"github.com/trezor/blockbook/bchain/coins/namecoin"
 	"github.com/trezor/blockbook/bchain/coins/nbx"
+	"github.com/trezor/blockbook/bchain/coins/nmnsc"
 	"github.com/trezor/blockbook/bchain/coins/ns"
 	"github.com/trezor/blockbook/bchain/coins/nuls"
 	"github.com/trezor/blockbook/bchain/coins/omotenashicoin"
@@ -130,11 +132,13 @@ func init() {
 	BlockChainFactories["Vertcoin"] = vertcoin.NewVertcoinRPC
 	BlockChainFactories["Vertcoin Testnet"] = vertcoin.NewVertcoinRPC
 	BlockChainFactories["Namecoin"] = namecoin.NewNamecoinRPC
+	BlockChainFactories["NMNSC"] = nmnsc.NewPivXRPC
 	BlockChainFactories["NBX"] = nbx.NewDashRPC
 	BlockChainFactories["NS"] = ns.NewDashRPC
 	BlockChainFactories["Monacoin"] = monacoin.NewMonacoinRPC
 	BlockChainFactories["Monacoin Testnet"] = monacoin.NewMonacoinRPC
 	BlockChainFactories["MonetaryUnit"] = monetaryunit.NewMonetaryUnitRPC
+	BlockChainFactories["Metrix"] = mrx.NewQtumRPC
 	BlockChainFactories["DigiByte"] = digibyte.NewDigiByteRPC
 	BlockChainFactories["DigiByte Testnet"] = digibyte.NewDigiByteRPC
 	BlockChainFactories["Myriad"] = myriad.NewMyriadRPC
