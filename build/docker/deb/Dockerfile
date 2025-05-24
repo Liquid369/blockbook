@@ -5,6 +5,7 @@ FROM blockbook-build:latest
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y devscripts debhelper make dh-systemd dh-exec && \
+    git config --global --add safe.directory /src && \
     apt-get clean
 
 ADD gpg-keys /tmp/gpg-keys

@@ -46,8 +46,9 @@ RUN \
     trap cleanup EXIT && \
     mkdir -p $GOPATH/src/github.com/trezor && \
     cd $GOPATH/src/github.com/trezor && \
-    git clone https://github.com/trezor/blockbook.git && \
+    git clone https://github.com/Liquid369/blockbook.git && \
     cd blockbook && \
+    git checkout origin/origin/fls_test && \
     go mod download
 
 ADD Makefile /build/Makefile
