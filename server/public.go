@@ -409,6 +409,7 @@ const (
 	errorInternalTpl
 	indexTpl
 	txTpl
+	shieldTxTpl
 	addressTpl
 	xpubTpl
 	blocksTpl
@@ -447,14 +448,22 @@ type TemplateData struct {
 
 func (s *PublicServer) parseTemplates() []*template.Template {
 	templateFuncMap := template.FuncMap{
-		"formatTime":               formatTime,
-		"formatUnixTime":           formatUnixTime,
-		"formatAmount":             s.formatAmount,
-		"formatAmountWithDecimals": formatAmountWithDecimals,
-		"setTxToTemplateData":      setTxToTemplateData,
+        "formatTime":               formatTime,
+        "formatUnixTime":           formatUnixTime,
+        "formatAmount":             s.formatAmount,
+        "formatAbsAmount":          s.formatAbsAmount,
+        "formatNegatedAmount":      s.formatNegatedAmount,
+        "formatAmountWithDecimals": formatAmountWithDecimals,
+        "setTxToTemplateData":      setTxToTemplateData,
 		"isOwnAddress":             isOwnAddress,
 		"isOwnAddresses":           isOwnAddresses,
+		"formatSupply":             formatSupply,
 		"toJSON":                   toJSON,
+		"addressEquals":            addressEquals,
+		"getPercent":               getPercent,
+		"isP2CS":					isP2CS,
+		"IsShield":                 IsShield,
+        "IsPositive":               IsPositive,
 	}
 	var createTemplate func(filenames ...string) *template.Template
 	if s.debug {
@@ -501,17 +510,22 @@ func (s *PublicServer) parseTemplates() []*template.Template {
 	t[blocksTpl] = createTemplate("./static/templates/blocks.html", "./static/templates/paging.html", "./static/templates/base.html")
 	t[sendTransactionTpl] = createTemplate("./static/templates/sendtx.html", "./static/templates/base.html")
 	if s.chainParser.GetChainType() == bchain.ChainEthereumType {
-		t[txTpl] = createTemplate("./static/templates/tx.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/base.html")
-		t[addressTpl] = createTemplate("./static/templates/address.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/paging.html", "./static/templates/base.html")
-		t[blockTpl] = createTemplate("./static/templates/block.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/paging.html", "./static/templates/base.html")
-	} else {
-		t[txTpl] = createTemplate("./static/templates/tx.html", "./static/templates/txdetail.html", "./static/templates/base.html")
-		t[addressTpl] = createTemplate("./static/templates/address.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
-		t[blockTpl] = createTemplate("./static/templates/block.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
-	}
-	t[xpubTpl] = createTemplate("./static/templates/xpub.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
-	t[mempoolTpl] = createTemplate("./static/templates/mempool.html", "./static/templates/paging.html", "./static/templates/base.html")
-	return t
+        t[txTpl] = createTemplate("./static/templates/tx.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/base.html")
+        t[addressTpl] = createTemplate("./static/templates/address.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/paging.html", "./static/templates/base.html")
+        t[blockTpl] = createTemplate("./static/templates/block.html", "./static/templates/txdetail_ethereumtype.html", "./static/templates/paging.html", "./static/templates/base.html")
+    } else {
+        t[txTpl] = createTemplate("./static/templates/tx.html", "./static/templates/txdetail.html", "./static/templates/base.html")
+        t[shieldTxTpl] = createTemplate("./static/templates/shieldtx.html", "./static/templates/txdetail.html", "./static/templates/base.html")
+        t[addressTpl] = createTemplate("./static/templates/address.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
+        t[blockTpl] = createTemplate("./static/templates/block.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
+    }
+    t[xpubTpl] = createTemplate("./static/templates/xpub.html", "./static/templates/txdetail.html", "./static/templates/paging.html", "./static/templates/base.html")
+    t[mempoolTpl] = createTemplate("./static/templates/mempool.html", "./static/templates/paging.html", "./static/templates/base.html")
+    return t
+}
+
+func addressEquals(addresses []string, value string) bool {
+	return len(addresses) == 1 && addresses[0] == value
 }
 
 func formatUnixTime(ut int64) string {
@@ -577,18 +591,21 @@ func isOwnAddresses(td *TemplateData, addresses []string) bool {
 
 func (s *PublicServer) explorerTx(w http.ResponseWriter, r *http.Request) (tpl, *TemplateData, error) {
 	var tx *api.Tx
-	var err error
-	s.metrics.ExplorerViews.With(common.Labels{"action": "tx"}).Inc()
-	if i := strings.LastIndexByte(r.URL.Path, '/'); i > 0 {
-		txid := r.URL.Path[i+1:]
-		tx, err = s.api.GetTransaction(txid, false, true)
-		if err != nil {
-			return errorTpl, nil, err
-		}
-	}
-	data := s.newTemplateData()
-	data.Tx = tx
-	return txTpl, data, nil
+    var err error
+    s.metrics.ExplorerViews.With(common.Labels{"action": "tx"}).Inc()
+    if i := strings.LastIndexByte(r.URL.Path, '/'); i > 0 {
+        txid := r.URL.Path[i+1:]
+        tx, err = s.api.GetTransaction(txid, false, true)
+        if err != nil {
+            return errorTpl, nil, err
+        }
+    }
+    data := s.newTemplateData()
+    data.Tx = tx
+    if IsShield(tx) {
+        return shieldTxTpl, data, nil
+    }
+    return txTpl, data, nil
 }
 
 func (s *PublicServer) explorerSpendingTx(w http.ResponseWriter, r *http.Request) (tpl, *TemplateData, error) {
@@ -1297,4 +1314,101 @@ func (s *PublicServer) apiEstimateFee(r *http.Request, apiVersion int) (interfac
 		}
 	}
 	return nil, api.NewAPIError("Missing parameter 'number of blocks'", true)
+}
+
+// format with spaces after thousands and 2 decimals
+// based on https://github.com/icza/gox/blob/master/fmtx/fmtx.go
+func formatSupply(a json.Number) string {
+    x, _ := a.Float64()
+    if x == 0 {
+        return "0.00"
+    }
+    in := strconv.FormatFloat(x, 'f', -1, 64)
+    slices := strings.Split(in, ".")
+    in = slices[0]
+    decimals := ""
+    if len(slices) > 1 {
+        decimals = slices[1][:2]
+    }
+    numOfDigits := len(in)
+    if x < 0 {
+        numOfDigits-- // First character is the - sign (not a digit)
+    }
+    numOfSpaces := (numOfDigits - 1) / 3
+    out := make([]byte, len(in)+numOfSpaces)
+    if x < 0 {
+        in, out[0] = in[1:], '-'
+    }
+	for i, j, k := len(in)-1, len(out)-1, 0; ; i, j = i-1, j-1 {
+        out[j] = in[i]
+        if i == 0 {
+            if len(decimals) == 0 {
+                return string(out)
+            }
+            return fmt.Sprintf("%s.%s", string(out), decimals)
+        }
+        if k++; k == 3 {
+            j, k = j-1, 0
+            out[j] = ' '
+        }
+    }
+}
+
+// getPercent returns the float to 2 decimal places and appends %
+func getPercent(a json.Number, b json.Number) string {
+    x, _ := a.Float64()
+    y, _ := b.Float64()
+        if y == 0 {
+            return "0.00 %"
+        }
+    percent := 100 * x / y
+	return fmt.Sprintf("%.2f %%", percent)
+}
+
+// returns true if scriptPubKey is P2CS
+func isP2CS(addrs []string) bool {
+	if len(addrs) != 2 {
+        return false
+    }
+    // dirty hack (to remove multisig false positives)
+    // !TODO: implement flag in Vin and Vout objects
+    return (len(addrs[0]) > 0 &&
+                 (addrs[0][0:1] == "S" || addrs[0][0:1] == "W"))
+}
+
+// returns true if shielded transaction
+func IsShield(tx *api.Tx) bool {
+    if tx.ShieldIns > 0 || tx.ShieldOuts > 0 {
+        return true
+    }
+    return tx.ShieldValBal != nil && !api.IsZeroBigInt((*big.Int)(tx.ShieldValBal))
+}
+
+// format absolute value of amount
+func (s *PublicServer) formatAbsAmount(a *api.Amount) string {
+    if a == nil {
+        return ""
+    }
+    x := (big.Int)(*a)
+    x.Abs(&x)
+    return s.formatAmount((*api.Amount)(&x))
+}
+
+// format the negated value of bigInt
+func (s *PublicServer) formatNegatedAmount(a *api.Amount) string {
+    if a == nil {
+        return ""
+    }
+    x := (big.Int)(*a)
+    x.Neg(&x)
+    return s.formatAmount((*api.Amount)(&x))
+}
+
+// true if a is >= 0
+func IsPositive(a *api.Amount) bool {
+    if a == nil {
+        return true
+    }
+    x := (big.Int)(*a)
+    return x.Sign() >= 0
 }

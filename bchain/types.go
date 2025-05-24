@@ -75,6 +75,14 @@ type Vout struct {
 	ScriptPubKey ScriptPubKey      `json:"scriptPubKey"`
 }
 
+type VShieldIn struct {
+    Data        json.RawMessage
+}
+
+type VShieldOut struct {
+    Data        json.RawMessage
+}
+
 // Tx is blockchain transaction
 // unnecessary fields are commented out to avoid overhead
 type Tx struct {
@@ -89,7 +97,21 @@ type Tx struct {
 	Confirmations    uint32      `json:"confirmations,omitempty"`
 	Time             int64       `json:"time,omitempty"`
 	Blocktime        int64       `json:"blocktime,omitempty"`
-	CoinSpecificData interface{} `json:"-"`
+	// PIVX Shield
+    VShieldIn            []VShieldIn  `json:"vShieldedSpend,omitempty"`
+    VShieldOut           []VShieldOut `json:"vShieldedOutput,omitempty"`
+    ShieldValBal         big.Int          `json:"valueBalanceSat"`
+	CoinSpecificData 	 interface{} `json:"-"`
+}
+
+// VinValues contains information about single transaction input with value
+type VinValues struct {
+	Value common.JSONNumber `json:"value"`
+}
+
+// TxForInValues containing inputs with values
+type TxForInValues struct {
+	Vin []VinValues `json:"vin"`
 }
 
 // MempoolVin contains data about tx input
@@ -133,12 +155,14 @@ type BlockHeader struct {
 // BlockInfo contains extended block header data and a list of block txids
 type BlockInfo struct {
 	BlockHeader
-	Version    common.JSONNumber `json:"version"`
-	MerkleRoot string            `json:"merkleroot"`
-	Nonce      common.JSONNumber `json:"nonce"`
-	Bits       string            `json:"bits"`
-	Difficulty common.JSONNumber `json:"difficulty"`
-	Txids      []string          `json:"tx,omitempty"`
+	Version    	  common.JSONNumber `json:"version"`
+	MerkleRoot 	  string            `json:"merkleroot"`
+	Nonce      	  common.JSONNumber `json:"nonce"`
+	Bits       	  string            `json:"bits"`
+	Difficulty 	  common.JSONNumber `json:"difficulty"`
+	Txids      	  []string          `json:"tx,omitempty"`
+	MoneySupply   json.Number 		`json:"moneysupply"`
+	SaplingRoot   string      		`json:"finalsaplingroot"`
 }
 
 // MempoolEntry is used to get data about mempool entry
@@ -173,6 +197,11 @@ type ChainInfo struct {
 	Timeoffset      float64     `json:"timeoffset"`
 	Warnings        string      `json:"warnings"`
 	Consensus       interface{} `json:"consensus,omitempty"`
+	TransparentSupply   json.Number `json:"transparentsupply"`
+    ShieldedSupply   json.Number `json:"shieldedsupply"`
+	MoneySupply		 json.Number `json:"moneysupply"`
+	MasternodeCount int `json:"masternodecount"`
+  	NextSuperBlock 	int `json:"masternodecount"`
 }
 
 // RPCError defines rpc error returned by backend
@@ -334,6 +363,7 @@ type BlockChainParser interface {
 	PackTx(tx *Tx, height uint32, blockTime int64) ([]byte, error)
 	UnpackTx(buf []byte) (*Tx, uint32, error)
 	GetAddrDescForUnknownInput(tx *Tx, input int) AddressDescriptor
+	GetValueSatForUnknownInput(tx *Tx, input int) *big.Int
 	// blocks
 	PackBlockHash(hash string) ([]byte, error)
 	UnpackBlockHash(buf []byte) (string, error)

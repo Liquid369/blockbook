@@ -51,6 +51,20 @@
                     <td>Size On Disk</td>
                     <td class="data">{{$bb.DbSize}}</td>
                 </tr>
+                <tr>
+                    <td>Transparent Supply</td>
+                    <td>
+                      <span class="data">{{formatSupply $be.TransparentSupply}}&nbsp;{{$cs}}</span>&nbsp;
+                      <em>({{getPercent $be.TransparentSupply $be.MoneySupply}})
+                    </td>
+                </tr>
+                <tr>
+                    <td>Shielded Supply</td>
+                    <td>
+                      <span class="data">{{formatSupply $be.ShieldedSupply}}&nbsp;{{$cs}}</span>&nbsp;
+                      <em>({{getPercent $be.ShieldedSupply $be.MoneySupply}})
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -87,6 +101,10 @@
                 <tr>
                     <td>Difficulty</td>
                     <td class="data">{{$be.Difficulty}}</td>
+                </tr>
+                <tr>
+                    <td>Total Money Supply</td>
+                    <td class="data">{{formatSupply $be.MoneySupply}}&nbsp;{{$cs}}</td>
                 </tr>
                 {{- if $be.Timeoffset -}}
                 <tr>

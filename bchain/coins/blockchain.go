@@ -11,45 +11,71 @@ import (
 
 	"github.com/juju/errors"
 	"github.com/trezor/blockbook/bchain"
+	"github.com/trezor/blockbook/bchain/coins/abet"
 	"github.com/trezor/blockbook/bchain/coins/bch"
 	"github.com/trezor/blockbook/bchain/coins/bellcoin"
 	"github.com/trezor/blockbook/bchain/coins/bitcore"
 	"github.com/trezor/blockbook/bchain/coins/bitzeny"
 	"github.com/trezor/blockbook/bchain/coins/btc"
 	"github.com/trezor/blockbook/bchain/coins/btg"
+	"github.com/trezor/blockbook/bchain/coins/bwi"
+	"github.com/trezor/blockbook/bchain/coins/cari"
 	"github.com/trezor/blockbook/bchain/coins/cpuchain"
+	"github.com/trezor/blockbook/bchain/coins/ctsc"
+	"github.com/trezor/blockbook/bchain/coins/cspn"
 	"github.com/trezor/blockbook/bchain/coins/dash"
+	"github.com/trezor/blockbook/bchain/coins/dashd"
+	"github.com/trezor/blockbook/bchain/coins/dev"
 	"github.com/trezor/blockbook/bchain/coins/dcr"
 	"github.com/trezor/blockbook/bchain/coins/deeponion"
 	"github.com/trezor/blockbook/bchain/coins/digibyte"
 	"github.com/trezor/blockbook/bchain/coins/divi"
+	"github.com/trezor/blockbook/bchain/coins/dogec"
 	"github.com/trezor/blockbook/bchain/coins/dogecoin"
+	"github.com/trezor/blockbook/bchain/coins/egg"
 	"github.com/trezor/blockbook/bchain/coins/eth"
+	"github.com/trezor/blockbook/bchain/coins/esk"
+	"github.com/trezor/blockbook/bchain/coins/essx"
+	"github.com/trezor/blockbook/bchain/coins/ezpay"
+	"github.com/trezor/blockbook/bchain/coins/fdr"
 	"github.com/trezor/blockbook/bchain/coins/firo"
 	"github.com/trezor/blockbook/bchain/coins/flo"
 	"github.com/trezor/blockbook/bchain/coins/fujicoin"
 	"github.com/trezor/blockbook/bchain/coins/gamecredits"
 	"github.com/trezor/blockbook/bchain/coins/grs"
+	"github.com/trezor/blockbook/bchain/coins/gtc"
+	"github.com/trezor/blockbook/bchain/coins/iq"
 	"github.com/trezor/blockbook/bchain/coins/koto"
+	"github.com/trezor/blockbook/bchain/coins/kts"
+	"github.com/trezor/blockbook/bchain/coins/kyan"
 	"github.com/trezor/blockbook/bchain/coins/liquid"
 	"github.com/trezor/blockbook/bchain/coins/litecoin"
+	"github.com/trezor/blockbook/bchain/coins/lyra"
 	"github.com/trezor/blockbook/bchain/coins/monacoin"
 	"github.com/trezor/blockbook/bchain/coins/monetaryunit"
 	"github.com/trezor/blockbook/bchain/coins/myriad"
+	"github.com/trezor/blockbook/bchain/coins/mrx"
 	"github.com/trezor/blockbook/bchain/coins/namecoin"
+	"github.com/trezor/blockbook/bchain/coins/nbx"
+	"github.com/trezor/blockbook/bchain/coins/nmnsc"
+	"github.com/trezor/blockbook/bchain/coins/ns"
 	"github.com/trezor/blockbook/bchain/coins/nuls"
 	"github.com/trezor/blockbook/bchain/coins/omotenashicoin"
 	"github.com/trezor/blockbook/bchain/coins/pivx"
 	"github.com/trezor/blockbook/bchain/coins/polis"
+	"github.com/trezor/blockbook/bchain/coins/pwrb"
 	"github.com/trezor/blockbook/bchain/coins/qtum"
 	"github.com/trezor/blockbook/bchain/coins/ravencoin"
 	"github.com/trezor/blockbook/bchain/coins/ritocoin"
 	"github.com/trezor/blockbook/bchain/coins/snowgem"
 	"github.com/trezor/blockbook/bchain/coins/trezarcoin"
+	"github.com/trezor/blockbook/bchain/coins/trtt"
 	"github.com/trezor/blockbook/bchain/coins/unobtanium"
+	"github.com/trezor/blockbook/bchain/coins/ulg"
 	"github.com/trezor/blockbook/bchain/coins/vertcoin"
 	"github.com/trezor/blockbook/bchain/coins/viacoin"
 	"github.com/trezor/blockbook/bchain/coins/vipstarcoin"
+	"github.com/trezor/blockbook/bchain/coins/xscr"
 	"github.com/trezor/blockbook/bchain/coins/zec"
 	"github.com/trezor/blockbook/common"
 )
@@ -70,27 +96,49 @@ func init() {
 	BlockChainFactories["Ethereum Classic"] = eth.NewEthereumRPC
 	BlockChainFactories["Ethereum Testnet Ropsten"] = eth.NewEthereumRPC
 	BlockChainFactories["Ethereum Testnet Goerli"] = eth.NewEthereumRPC
+	BlockChainFactories["ABET"] = abet.NewPivXRPC
 	BlockChainFactories["Bcash"] = bch.NewBCashRPC
 	BlockChainFactories["Bcash Testnet"] = bch.NewBCashRPC
 	BlockChainFactories["Bgold"] = btg.NewBGoldRPC
 	BlockChainFactories["Bgold Testnet"] = btg.NewBGoldRPC
+	BlockChainFactories["BWI"] = bwi.NewPivXRPC
+	BlockChainFactories["CARI"] = cari.NewDashRPC
+	BlockChainFactories["CTSC"] = ctsc.NewDashRPC
+	BlockChainFactories["CSPN"] = cspn.NewDashRPC
 	BlockChainFactories["Dash"] = dash.NewDashRPC
 	BlockChainFactories["Dash Testnet"] = dash.NewDashRPC
+	BlockChainFactories["DASHD"] = dashd.NewPivXRPC
 	BlockChainFactories["Decred"] = dcr.NewDecredRPC
 	BlockChainFactories["Decred Testnet"] = dcr.NewDecredRPC
+	BlockChainFactories["DEV"] = dev.NewPivXRPC
+	BlockChainFactories["DOGEC"] = dogec.NewPivXRPC
+	BlockChainFactories["EGG"] = egg.NewPivXRPC
+	BlockChainFactories["ESK"] = esk.NewPivXRPC
+	BlockChainFactories["EZPAY"] = ezpay.NewPivXRPC
+	BlockChainFactories["ESSX"] = essx.NewDashRPC
+	BlockChainFactories["FDR"] = fdr.NewDashRPC
 	BlockChainFactories["GameCredits"] = gamecredits.NewGameCreditsRPC
+	BlockChainFactories["GTC"] = gtc.NewPivXRPC
+	BlockChainFactories["IQ"] = iq.NewDashRPC
 	BlockChainFactories["Koto"] = koto.NewKotoRPC
 	BlockChainFactories["Koto Testnet"] = koto.NewKotoRPC
+	BlockChainFactories["KTS"] = kts.NewPivXRPC
+	BlockChainFactories["KYAN"] = kyan.NewDashRPC
 	BlockChainFactories["Litecoin"] = litecoin.NewLitecoinRPC
 	BlockChainFactories["Litecoin Testnet"] = litecoin.NewLitecoinRPC
+	BlockChainFactories["LYRA"] = lyra.NewPivXRPC
 	BlockChainFactories["Dogecoin"] = dogecoin.NewDogecoinRPC
 	BlockChainFactories["Dogecoin Testnet"] = dogecoin.NewDogecoinRPC
 	BlockChainFactories["Vertcoin"] = vertcoin.NewVertcoinRPC
 	BlockChainFactories["Vertcoin Testnet"] = vertcoin.NewVertcoinRPC
 	BlockChainFactories["Namecoin"] = namecoin.NewNamecoinRPC
+	BlockChainFactories["NMNSC"] = nmnsc.NewPivXRPC
+	BlockChainFactories["NBX"] = nbx.NewDashRPC
+	BlockChainFactories["NS"] = ns.NewDashRPC
 	BlockChainFactories["Monacoin"] = monacoin.NewMonacoinRPC
 	BlockChainFactories["Monacoin Testnet"] = monacoin.NewMonacoinRPC
 	BlockChainFactories["MonetaryUnit"] = monetaryunit.NewMonetaryUnitRPC
+	BlockChainFactories["Metrix"] = mrx.NewQtumRPC
 	BlockChainFactories["DigiByte"] = digibyte.NewDigiByteRPC
 	BlockChainFactories["DigiByte Testnet"] = digibyte.NewDigiByteRPC
 	BlockChainFactories["Myriad"] = myriad.NewMyriadRPC
@@ -102,6 +150,8 @@ func init() {
 	BlockChainFactories["PIVX"] = pivx.NewPivXRPC
 	BlockChainFactories["PIVX Testnet"] = pivx.NewPivXRPC
 	BlockChainFactories["Polis"] = polis.NewPolisRPC
+	BlockChainFactories["PWRB"] = pwrb.NewPivXRPC
+	BlockChainFactories["TRTT"] = trtt.NewPivXRPC
 	BlockChainFactories["Firo"] = firo.NewFiroRPC
 	BlockChainFactories["Fujicoin"] = fujicoin.NewFujicoinRPC
 	BlockChainFactories["Flo"] = flo.NewFloRPC
@@ -111,12 +161,14 @@ func init() {
 	BlockChainFactories["Qtum Testnet"] = qtum.NewQtumRPC
 	BlockChainFactories["NULS"] = nuls.NewNulsRPC
 	BlockChainFactories["VIPSTARCOIN"] = vipstarcoin.NewVIPSTARCOINRPC
+	BlockChainFactories["XSCR"] = xscr.NewPivXRPC
 	BlockChainFactories["ZelCash"] = zec.NewZCashRPC
 	BlockChainFactories["Ravencoin"] = ravencoin.NewRavencoinRPC
 	BlockChainFactories["Ritocoin"] = ritocoin.NewRitocoinRPC
 	BlockChainFactories["Divi"] = divi.NewDiviRPC
 	BlockChainFactories["CPUchain"] = cpuchain.NewCPUchainRPC
 	BlockChainFactories["Unobtanium"] = unobtanium.NewUnobtaniumRPC
+	BlockChainFactories["ULG"] = ulg.NewPivXRPC
 	BlockChainFactories["DeepOnion"] = deeponion.NewDeepOnionRPC
 	BlockChainFactories["SnowGem"] = snowgem.NewSnowGemRPC
 	BlockChainFactories["Bitcore"] = bitcore.NewBitcoreRPC

@@ -36,6 +36,12 @@
                     <td>Size (bytes)</td>
                     <td class="data">{{$b.Size}}</td>
                 </tr>
+                {{- if $b.Nonce -}}
+                <tr>
+                    <td>Nonce</td>
+                    <td class="data ellipsis">{{$b.Nonce}}</td>
+                </tr>
+                {{end}}
             </tbody>
         </table>
     </div>
@@ -51,8 +57,8 @@
                     <td class="data ellipsis">{{$b.MerkleRoot}}</td>
                 </tr>
                 <tr>
-                    <td>Nonce</td>
-                    <td class="data ellipsis">{{$b.Nonce}}</td>
+                    <td>Sapling Root</td>
+                    <td class="data ellipsis">{{$b.SaplingRoot}}</td>
                 </tr>
                 <tr>
                     <td>Bits</td>
@@ -61,6 +67,10 @@
                 <tr>
                     <td>Difficulty</td>
                     <td class="data ellipsis">{{$b.Difficulty}}</td>
+                </tr>
+                <tr>
+                    <td>Total Supply</td>
+                    <td class="data">{{formatSupply $b.MoneySupply}} {{$cs}}</td>
                 </tr>
             </tbody>
         </table>
