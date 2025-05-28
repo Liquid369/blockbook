@@ -1,0 +1,68 @@
+{
+    "coin": {
+      "name": "SCC",
+      "shortcut": "SCC",
+      "label": "StakeCube Coin",
+      "alias": "scc"
+    },
+    "ports": {
+      "backend_rpc": 8012,
+      "backend_message_queue": 38303,
+      "blockbook_internal": 9003,
+      "blockbook_public": 9103
+    },
+    "ipc": {
+      "rpc_url_template": "http://127.0.0.1:{{.Ports.BackendRPC}}",
+      "rpc_user": "rpc",
+      "rpc_pass": "rpc",
+      "rpc_timeout": 25,
+      "message_queue_binding_template": "tcp://127.0.0.1:{{.Ports.BackendMessageQueue}}"
+    },
+    "backend": {
+      "package_name": "backend-scc",
+      "package_revision": "satoshilabs-1",
+      "system_user": "scc",
+      "version": "3.0.2",
+      "binary_url": "https://github.com/stakecube/StakeCubeCoin/releases/download/v3.0.2/scc-3.0.2-linux-daemon.zip",
+      "verification_type": "sha256",
+      "verification_source": "82dd51af0449020b646c056c839484c467e5fac82cc3b021582300eb0318d4ae",
+      "extract_command": "unzip -d backend",
+      "exclude_files": [],
+      "exec_command_template": "{{.Env.BackendInstallPath}}/{{.Coin.Alias}}/sccd -datadir={{.Env.BackendDataPath}}/{{.Coin.Alias}}/backend -conf={{.Env.BackendInstallPath}}/{{.Coin.Alias}}/{{.Coin.Alias}}.conf -pid=/run/{{.Coin.Alias}}/{{.Coin.Alias}}.pid",
+      "logrotate_files_template": "{{.Env.BackendDataPath}}/{{.Coin.Alias}}/backend/*.log",
+      "postinst_script_template": "",
+      "service_type": "forking",
+      "service_additional_params_template": "",
+      "protect_memory": true,
+      "mainnet": true,
+      "server_config_file": "bitcoin_like.conf",
+      "client_config_file": "bitcoin_like_client.conf",
+      "additional_params": {
+        "mempoolexpiry": 72
+      }
+    },
+    "blockbook": {
+      "package_name": "blockbook-scc",
+      "system_user": "blockbook-scc",
+      "internal_binding_template": ":{{.Ports.BlockbookInternal}}",
+      "public_binding_template": ":{{.Ports.BlockbookPublic}}",
+      "explorer_url": "",
+      "additional_params": "",
+      "block_chain": {
+        "parse": true,
+        "mempool_workers": 8,
+        "mempool_sub_workers": 2,
+        "block_addresses_to_keep": 300,
+        "xpub_magic": 50221772,
+        "slip44": 5,
+        "additional_params": {
+          "fiat_rates": "coingecko",
+          "fiat_rates_params": "{\"url\": \"https://api.coingecko.com/api/v3\", \"coin\": \"stakecube\", \"periodSeconds\": 60}"
+        }
+      }
+    },
+    "meta": {
+      "package_maintainer": "Liquid369",
+      "package_maintainer_email": "Liquid369@gmail.com"
+    }
+  }
