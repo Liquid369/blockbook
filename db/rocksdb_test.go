@@ -206,8 +206,9 @@ func verifyAfterBitcoinTypeBlock1(t *testing.T, d *RocksDB, afterDisconnect bool
 			dbtestdata.TxidB1T1,
 			varuintToHex(225493) +
 				"00" +
-				"02" +
+				"03" +
 				addressToPubKeyHexWithLength(dbtestdata.Addr1, t, d) + bigintToHex(dbtestdata.SatB1T1A1) +
+				addressToPubKeyHexWithLength(dbtestdata.Addr2, t, d) + bigintToHex(dbtestdata.SatB1T1A2) +
 				addressToPubKeyHexWithLength(dbtestdata.Addr2, t, d) + bigintToHex(dbtestdata.SatB1T1A2) +
                 "000000",
 			nil,
@@ -237,8 +238,10 @@ func verifyAfterBitcoinTypeBlock1(t *testing.T, d *RocksDB, afterDisconnect bool
 		},
 		{
 			dbtestdata.AddressToPubKeyHex(dbtestdata.Addr2, d.chainParser),
-			"01" + bigintToHex(dbtestdata.SatZero) + bigintToHex(dbtestdata.SatB1T1A2) +
-				dbtestdata.TxidB1T1 + varuintToHex(1) + varuintToHex(225493) + bigintToHex(dbtestdata.SatB1T1A2),
+			"01" + bigintToHex(dbtestdata.SatZero) + bigintToHex(dbtestdata.SatB1T1A2Double) +
+				dbtestdata.TxidB1T1 + varuintToHex(1) + varuintToHex(225493) + bigintToHex(dbtestdata.SatB1T1A2) +
+				dbtestdata.TxidB1T1 + varuintToHex(2) + varuintToHex(225493) + bigintToHex(dbtestdata.SatB1T1A2) +
+                "000000",
 			nil,
 		},
 		{
@@ -552,7 +555,7 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 	if err := d.ConnectBlock(block1); err != nil {
 		t.Fatal(err)
 	}
-	//verifyAfterBitcoinTypeBlock1(t, d, false)
+	verifyAfterBitcoinTypeBlock1(t, d, false)
 
 	if len(d.is.BlockTimes) != 1 {
 		t.Fatal("Expecting is.BlockTimes 1, got ", len(d.is.BlockTimes))
@@ -667,7 +670,7 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//verifyAfterBitcoinTypeBlock1(t, d, true)
+	verifyAfterBitcoinTypeBlock1(t, d, true)
 	if err := checkColumn(d, cfTransactions, []keyPair{}); err != nil {
 		{
 			t.Fatal(err)
