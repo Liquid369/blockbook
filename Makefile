@@ -4,7 +4,7 @@ PACKAGER = $(shell id -u):$(shell id -g)
 BASE_IMAGE = $$(awk -F= '$$1=="ID" { print $$2 ;}' /etc/os-release):$$(awk -F= '$$1=="VERSION_ID" { print $$2 ;}' /etc/os-release | tr -d '"')
 NO_CACHE = false
 TCMALLOC = 
-ARGS ?= DEB_BUILD_OPTIONS=nocheck
+ARGS ?=
 
 TARGETS=$(subst .json,, $(shell ls configs/coins))
 
