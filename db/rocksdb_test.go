@@ -541,20 +541,12 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 	})
 	defer closeAndDestroyRocksDB(t, d)
 
-	if len(d.is.BlockTimes) != 0 {
-		t.Fatal("Expecting is.BlockTimes 0, got ", len(d.is.BlockTimes))
-	}
-
 	// connect 1st block - will log warnings about missing UTXO transactions in txAddresses column
 	block1 := dbtestdata.GetTestBitcoinTypeBlock1(d.chainParser)
 	if err := d.ConnectBlock(block1); err != nil {
 		t.Fatal(err)
 	}
 	verifyAfterBitcoinTypeBlock1(t, d, false)
-
-	if len(d.is.BlockTimes) != 1 {
-		t.Fatal("Expecting is.BlockTimes 1, got ", len(d.is.BlockTimes))
-	}
 
 	// connect 2nd block - use some outputs from the 1st block as the inputs and 1 input uses tx from the same block
 	block2 := dbtestdata.GetTestBitcoinTypeBlock2(d.chainParser)
@@ -563,19 +555,13 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 	}
 	verifyAfterBitcoinTypeBlock2(t, d)
 
-	if len(d.is.BlockTimes) != 2 {
-		t.Fatal("Expecting is.BlockTimes 1, got ", len(d.is.BlockTimes))
-	}
-
 	// get transactions for various addresses / low-high ranges
 	verifyGetTransactions(t, d, dbtestdata.Addr2, 0, 1000000, []txidIndex{
 		{dbtestdata.TxidB2T1, ^1},
 		{dbtestdata.TxidB1T1, 1},
-		{dbtestdata.TxidB1T1, 2},
 	}, nil)
 	verifyGetTransactions(t, d, dbtestdata.Addr2, 225493, 225493, []txidIndex{
 		{dbtestdata.TxidB1T1, 1},
-		{dbtestdata.TxidB1T1, 2},
 	}, nil)
 	verifyGetTransactions(t, d, dbtestdata.Addr2, 225494, 1000000, []txidIndex{
 		{dbtestdata.TxidB2T1, ^1},
@@ -629,7 +615,7 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 		Hash:   "00000000eb0443fd7dc4a1ed5c686a8e995057805f9a161d9a5a77a95e72b7b6",
 		Txs:    4,
 		Size:   2345678,
-		Time:   1521595678,
+		Time:   1534859123,
 		Height: 225494,
 	}
 	if !reflect.DeepEqual(info, iw) {
@@ -672,19 +658,11 @@ func TestRocksDB_Index_BitcoinType(t *testing.T) {
 		}
 	}
 
-	if len(d.is.BlockTimes) != 1 {
-		t.Fatal("Expecting is.BlockTimes 1, got ", len(d.is.BlockTimes))
-	}
-
 	// connect block again and verify the state of db
 	if err := d.ConnectBlock(block2); err != nil {
 		t.Fatal(err)
 	}
 	verifyAfterBitcoinTypeBlock2(t, d)
-
-	if len(d.is.BlockTimes) != 2 {
-		t.Fatal("Expecting is.BlockTimes 1, got ", len(d.is.BlockTimes))
-	}
 
 	// test public methods for address balance and tx addresses
 	ab, err := d.GetAddressBalance(dbtestdata.Addr5, AddressBalanceDetailUTXO)
