@@ -1,11 +1,11 @@
 package dbtestdata
 
 import (
+	"blockbook/bchain"
 	"encoding/hex"
 	"math/big"
 
 	"github.com/golang/glog"
-	"github.com/trezor/blockbook/bchain"
 )
 
 // Txids, Xpubs and Addresses
@@ -17,8 +17,7 @@ const (
 	TxidB2T3 = "05e2e48aeabdd9b75def7b48d756ba304713c2aba7b522bf9dbc893fc4231b07"
 	TxidB2T4 = "fdd824a780cbb718eeb766eb05d83fdefc793a27082cd5e67f856d69798cf7db"
 
-	Xpub              = "upub5E1xjDmZ7Hhej6LPpS8duATdKXnRYui7bDYj6ehfFGzWDZtmCmQkZhc3Zb7kgRLtHWd16QFxyP86JKL3ShZEBFX88aciJ3xyocuyhZZ8g6q"
-	TaprootDescriptor = "tr([5c9e228d/86'/1'/0']tpubDC88gkaZi5HvJGxGDNLADkvtdpni3mLmx6vr2KnXmWMG8zfkBRggsxHVBkUpgcwPe2KKpkyvTJCdXHb1UHEWE64vczyyPQfHr1skBcsRedN/{0,1}/*)#4rqwxvej"
+	Xpub = "upub5E1xjDmZ7Hhej6LPpS8duATdKXnRYui7bDYj6ehfFGzWDZtmCmQkZhc3Zb7kgRLtHWd16QFxyP86JKL3ShZEBFX88aciJ3xyocuyhZZ8g6q"
 
 	Addr1 = "mfcWp7DB6NuaZsExybTTXpVgWz559Np4Ti"  // 76a914010d39800f86122416e28f485029acf77507169288ac
 	Addr2 = "mtGXQvBowMkBpnhLckhxhbwYK44Gs9eEtz"  // 76a9148bdf0aa3c567aa5975c2e61321b8bebbe7293df688ac
@@ -36,19 +35,18 @@ const (
 
 // Amounts in satoshis
 var (
-	SatZero         = big.NewInt(0)
-	SatB1T1A1       = big.NewInt(100000000)
-	SatB1T1A2       = big.NewInt(12345)
-	SatB1T1A2Double = big.NewInt(12345 * 2)
-	SatB1T2A3       = big.NewInt(1234567890123)
-	SatB1T2A4       = big.NewInt(1)
-	SatB1T2A5       = big.NewInt(9876)
-	SatB2T1A6       = big.NewInt(317283951061)
-	SatB2T1A7       = big.NewInt(917283951061)
-	SatB2T2A8       = big.NewInt(118641975500)
-	SatB2T2A9       = big.NewInt(198641975500)
-	SatB2T3A5       = big.NewInt(9000)
-	SatB2T4AA       = big.NewInt(1360030331)
+	SatZero   = big.NewInt(0)
+	SatB1T1A1 = big.NewInt(100000000)
+	SatB1T1A2 = big.NewInt(12345)
+	SatB1T2A3 = big.NewInt(1234567890123)
+	SatB1T2A4 = big.NewInt(1)
+	SatB1T2A5 = big.NewInt(9876)
+	SatB2T1A6 = big.NewInt(317283951061)
+	SatB2T1A7 = big.NewInt(917283951061)
+	SatB2T2A8 = big.NewInt(118641975500)
+	SatB2T2A9 = big.NewInt(198641975500)
+	SatB2T3A5 = big.NewInt(9000)
+	SatB2T4AA = big.NewInt(1360030331)
 )
 
 // AddressToPubKeyHex is a utility conversion function
@@ -70,7 +68,7 @@ func GetTestBitcoinTypeBlock1(parser bchain.BlockChainParser) *bchain.Block {
 			Height:        225493,
 			Hash:          "0000000076fbbed90fd75b0e18856aa35baa984e9c9d444cf746ad85e94e2997",
 			Size:          1234567,
-			Time:          1521515026,
+			Time:          1534858021,
 			Confirmations: 2,
 		},
 		Txs: []bchain.Tx{
@@ -92,16 +90,9 @@ func GetTestBitcoinTypeBlock1(parser bchain.BlockChainParser) *bchain.Block {
 						},
 						ValueSat: *SatB1T1A2,
 					},
-					{
-						N: 2,
-						ScriptPubKey: bchain.ScriptPubKey{
-							Hex: AddressToPubKeyHex(Addr2, parser),
-						},
-						ValueSat: *SatB1T1A2,
-					},
 				},
-				Blocktime:     1521515026,
-				Time:          1521515026,
+				Blocktime:     22549300000,
+				Time:          22549300000,
 				Confirmations: 2,
 			},
 			{
@@ -129,8 +120,8 @@ func GetTestBitcoinTypeBlock1(parser bchain.BlockChainParser) *bchain.Block {
 						ValueSat: *SatB1T2A5,
 					},
 				},
-				Blocktime:     1521515026,
-				Time:          1521515026,
+				Blocktime:     22549300001,
+				Time:          22549300001,
 				Confirmations: 2,
 			},
 		},
@@ -144,7 +135,7 @@ func GetTestBitcoinTypeBlock2(parser bchain.BlockChainParser) *bchain.Block {
 			Height:        225494,
 			Hash:          "00000000eb0443fd7dc4a1ed5c686a8e995057805f9a161d9a5a77a95e72b7b6",
 			Size:          2345678,
-			Time:          1521595678,
+			Time:          1534859123,
 			Confirmations: 1,
 		},
 		Txs: []bchain.Tx{
@@ -185,8 +176,8 @@ func GetTestBitcoinTypeBlock2(parser bchain.BlockChainParser) *bchain.Block {
 						ValueSat: *SatZero,
 					},
 				},
-				Blocktime:     1521595678,
-				Time:          1521595678,
+				Blocktime:     22549400000,
+				Time:          22549400000,
 				Confirmations: 1,
 			},
 			{
@@ -219,8 +210,8 @@ func GetTestBitcoinTypeBlock2(parser bchain.BlockChainParser) *bchain.Block {
 						ValueSat: *SatB2T2A9,
 					},
 				},
-				Blocktime:     1521595678,
-				Time:          1521595678,
+				Blocktime:     22549400001,
+				Time:          22549400001,
 				Confirmations: 1,
 			},
 			// transaction from the same address in the previous block
@@ -242,8 +233,8 @@ func GetTestBitcoinTypeBlock2(parser bchain.BlockChainParser) *bchain.Block {
 						ValueSat: *SatB2T3A5,
 					},
 				},
-				Blocktime:     1521595678,
-				Time:          1521595678,
+				Blocktime:     22549400002,
+				Time:          22549400002,
 				Confirmations: 1,
 			},
 			// mining transaction
@@ -268,8 +259,8 @@ func GetTestBitcoinTypeBlock2(parser bchain.BlockChainParser) *bchain.Block {
 						ValueSat:     *SatZero,
 					},
 				},
-				Blocktime:     1521595678,
-				Time:          1521595678,
+				Blocktime:     22549400003,
+				Time:          22549400003,
 				Confirmations: 1,
 			},
 		},
