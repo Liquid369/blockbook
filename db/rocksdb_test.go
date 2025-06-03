@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strings"
 	"testing"
-	"time"
 
 	vlq "github.com/bsm/go-vlq"
 	"github.com/juju/errors"
