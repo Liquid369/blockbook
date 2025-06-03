@@ -39,6 +39,7 @@ var (
 	SatZero   = big.NewInt(0)
 	SatB1T1A1 = big.NewInt(100000000)
 	SatB1T1A2 = big.NewInt(12345)
+	SatB1T1A2Double = big.NewInt(12345 * 2)
 	SatB1T2A3 = big.NewInt(1234567890123)
 	SatB1T2A4 = big.NewInt(1)
 	SatB1T2A5 = big.NewInt(9876)
