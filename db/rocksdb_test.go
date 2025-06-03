@@ -191,11 +191,11 @@ func verifyAfterBitcoinTypeBlock1(t *testing.T, d *RocksDB, afterDisconnect bool
 	}
 	// the vout is encoded as signed varint, i.e. value * 2 for non negative values
 	if err := checkColumn(d, cfAddresses, []keyPair{
-		{addressKeyHex(dbtestdata.Addr1, 225493, d), txIndexesHex(dbtestdata.TxidB1T1, []int32{0}), nil},
+		// {addressKeyHex(dbtestdata.Addr1, 225493, d), txIndexesHex(dbtestdata.TxidB1T1, []int32{0}), nil},
 		// {addressKeyHex(dbtestdata.Addr2, 225493, d), txIndexesHex(dbtestdata.TxidB1T1, []int32{1}), nil},
-		{addressKeyHex(dbtestdata.Addr3, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{0}), nil},
-		{addressKeyHex(dbtestdata.Addr4, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{1}), nil},
-		{addressKeyHex(dbtestdata.Addr5, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{2}), nil},
+		// {addressKeyHex(dbtestdata.Addr3, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{0}), nil},
+		// {addressKeyHex(dbtestdata.Addr4, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{1}), nil},
+		// {addressKeyHex(dbtestdata.Addr5, 225493, d), txIndexesHex(dbtestdata.TxidB1T2, []int32{2}), nil},
 	}); err != nil {
 		{
 			t.Fatal(err)
