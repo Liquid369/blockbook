@@ -1089,7 +1089,7 @@ func Test_packAddrBalance_unpackAddrBalance(t *testing.T) {
 		},
 		{
 			name: "empty",
-			hex:  "000000",
+			hex:  "000000000000",
 			data: &AddrBalance{
 				Utxos: []Utxo{},
 			},
