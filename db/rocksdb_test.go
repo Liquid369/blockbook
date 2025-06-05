@@ -1013,7 +1013,7 @@ func Test_packTxAddresses_unpackTxAddresses(t *testing.T) {
 		},
 		{
 			name: "empty",
-			hex:  "000000",
+			hex:  "000000000000",
 			data: &TxAddresses{
 				Inputs:  []TxInput{},
 				Outputs: []TxOutput{},
