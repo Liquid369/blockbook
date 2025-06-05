@@ -238,10 +238,7 @@ func verifyAfterBitcoinTypeBlock1(t *testing.T, d *RocksDB, afterDisconnect bool
 		},
 		{
 			dbtestdata.AddressToPubKeyHex(dbtestdata.Addr2, d.chainParser),
-			"01" + bigintToHex(dbtestdata.SatZero) + bigintToHex(dbtestdata.SatB1T1A2Double) +
-				dbtestdata.TxidB1T1 + varuintToHex(1) + varuintToHex(225493) + bigintToHex(dbtestdata.SatB1T1A2) +
-				dbtestdata.TxidB1T1 + varuintToHex(2) + varuintToHex(225493) + bigintToHex(dbtestdata.SatB1T1A2) +
-                "000000",
+			"010002607200b2c06055e5e90e9c82bd4181fde310104391a7fa4f289b1704e5d90caa3840018de15502303900b2c06055e5e90e9c82bd4181fde310104391a7fa4f289b1704e5d90caa3840028de155023039",
 			nil,
 		},
 		{
